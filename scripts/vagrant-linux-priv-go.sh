@@ -4,7 +4,7 @@ set -o errexit
 
 function install_go() {
 	local go_version="1.18.2"
-	local download="https://storage.googleapis.com/golang/go${go_version}.linux-amd64.tar.gz"
+	local download="https://storage.googleapis.com/golang/go${go_version}.linux-$(dpkg --print-architecture).tar.gz"
 
 		if go version 2>&1 | grep -q "${go_version}"; then
 		return

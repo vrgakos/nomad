@@ -3,7 +3,7 @@
 set -o errexit
 
 VERSION="1.10.3"
-DOWNLOAD=https://releases.hashicorp.com/consul/${VERSION}/consul_${VERSION}_linux_amd64.zip
+DOWNLOAD=https://releases.hashicorp.com/consul/${VERSION}/consul_${VERSION}_linux_$(dpkg --print-architecture).zip
 
 function install_consul() {
 	if [[ -e /usr/bin/consul ]] ; then

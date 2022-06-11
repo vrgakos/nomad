@@ -3,7 +3,7 @@
 set -o errexit
 
 VERSION=1.8.4
-DOWNLOAD=https://releases.hashicorp.com/vault/${VERSION}/vault_${VERSION}_linux_amd64.zip
+DOWNLOAD=https://releases.hashicorp.com/vault/${VERSION}/vault_${VERSION}_linux_$(dpkg --print-architecture).zip
 
 function install_vault() {
 	if [[ -e /usr/bin/vault ]] ; then
