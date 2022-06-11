@@ -2,8 +2,15 @@
 # vi: set ft=ruby :
 #
 
-LINUX_BASE_BOX = "bento/ubuntu-18.04"
+@uname = `uname -a`
+@uname = @uname.downcase
+LINUX_BASE_BOX = "bento/ubuntu-20.04"
 FREEBSD_BASE_BOX = "freebsd/FreeBSD-11.3-STABLE"
+
+if @uname.include?('darwin') && @uname.include?("arm64")
+  @os = 'darwin/arm64'
+  LINUX_BASE_BOX = "bytesguy/ubuntu-server-20.04-arm64"
+end
 
 LINUX_IP_ADDRESS = "192.168.56.200"
 
@@ -22,7 +29,7 @@ Vagrant.configure(2) do |config|
 		vmCfg.vm.network :forwarded_port, guest: 8500, host: 8500, auto_correct: true, host_ip: "127.0.0.1"
 
 		vmCfg.vm.synced_folder '.',
-			'/opt/gopath/src/github.com/hashicorp/nomad'
+			'/opt/gopath/src/github.com/hashicorp/nomad', type: "smb"
 
 		vmCfg.vm.provision "shell",
 			privileged: false,
@@ -174,11 +181,12 @@ def configureProviders(vmCfg, cpus: "2", memory: "2048")
 		v.cpus = cpus
 	end
 
-	["vmware_fusion", "vmware_workstation"].each do |p|
+	["vmware_fusion", "vmware_desktop", "vmware_workstation"].each do |p|
 		vmCfg.vm.provider p do |v|
 			v.enable_vmrun_ip_lookup = false
 			v.vmx["memsize"] = memory
 			v.vmx["numvcpus"] = cpus
+			v.vmx["ethernet0.pcislotnumber"] = "33"
 		end
 	end
 
