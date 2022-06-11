@@ -25,13 +25,9 @@ function install_go() {
 
 install_go
 
-# Ensure that the GOPATH tree is owned by vagrant:vagrant
-mkdir -p /opt/gopath
-chown -R vagrant:vagrant /opt/gopath
-
 # Ensure Go is on PATH
 if [ ! -e /usr/bin/go ] ; then
-	ln -s /usr/local/go/bin/go /usr/bin/go
+	ln -s /go /usr/bin/go
 fi
 if [ ! -e /usr/bin/gofmt ] ; then
 	ln -s /usr/local/go/bin/gofmt /usr/bin/gofmt
@@ -41,8 +37,11 @@ fi
 # Ensure new sessions know about GOPATH
 if [ ! -f /etc/profile.d/gopath.sh ] ; then
 	cat <<EOT > /etc/profile.d/gopath.sh
-export GOPATH="/opt/gopath"
-export PATH="/opt/gopath/bin:\$PATH"
+if [ "\${HOME}" != "" ]
+then
+  mkdir -p "\${HOME}/go/bin"
+  export PATH="\${PATH}:/usr/local/go/bin:\${HOME}/go/bin"
+fi
 EOT
 	chmod 755 /etc/profile.d/gopath.sh
 fi
