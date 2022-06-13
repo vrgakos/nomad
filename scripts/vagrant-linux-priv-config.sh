@@ -4,44 +4,52 @@ export DEBIAN_FRONTEND=noninteractive
 
 # Update and ensure we have apt-add-repository
 apt-get update
-apt-get install -y software-properties-common
-
-# Add i386 architecture (for libraries)
-dpkg --add-architecture i386
-
-# Update with i386, Go and Docker
-apt-get update
+apt-get install -y
 
 # Install Core build utilities for Linux
 apt-get install -y \
-	build-essential \
+ 	software-properties-common \
+ 	build-essential \
 	git \
-	libc6-dev-i386 \
 	libpcre3-dev \
-	linux-libc-dev:i386 \
 	pkg-config \
+	unzip \
 	zip \
 	curl \
 	jq \
 	tree \
-	unzip \
 	wget
 
 # Install ARM build utilities
 apt-get install -y \
 	binutils-aarch64-linux-gnu \
-	binutils-arm-linux-gnueabihf \
 	gcc-aarch64-linux-gnu \
+	linux-libc-dev-arm64-cross \
+	libc6-dev-arm64-cross \
+	\
+	binutils-arm-linux-gnueabihf \
 	gcc-arm-linux-gnueabihf \
-	gcc-multilib-arm-linux-gnueabihf
-
-# Install Windows build utilities
-apt-get install -y \
+	gcc-multilib-arm-linux-gnueabihf \
+	linux-libc-dev-armhf-cross \
+	libc6-dev-armhf-cross \
+	\
+	binutils-x86-64-linux-gnu \
+	gcc-x86-64-linux-gnu \
+	gcc-multilib-x86-64-linux-gnu \
+	linux-libc-dev-amd64-cross \
+	libc6-dev-amd64-cross \
+	\
+	binutils-x86-64-linux-gnux32 \
+	gcc-x86-64-linux-gnux32 \
+	gcc-multilib-x86-64-linux-gnux32 \
+	linux-libc-dev-x32-cross \
+	libc6-dev-x32-cross \
+	\
 	binutils-mingw-w64 \
 	gcc-mingw-w64
 
 # Ensure everything is up to date
-apt-get upgrade -y
+# apt-get upgrade -y
 
 # Set hostname -> IP to make advertisement work as expected
 ip=$(ip route get 1 | awk '{print $NF; exit}')

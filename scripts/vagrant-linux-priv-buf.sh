@@ -2,9 +2,16 @@
 
 set -o errexit
 
+ARCH=x86_64
+if [ "$(dpkg --print-architecture)" == "arm64" ]
+then
+ARCH=aarch64
+fi
+
+
 # Make sure you grab the latest version
-VERSION=0.36.0
-DOWNLOAD=https://github.com/bufbuild/buf/releases/download/v${VERSION}/buf-Linux-x86_64
+VERSION=1.5.0
+DOWNLOAD=https://github.com/bufbuild/buf/releases/download/v${VERSION}/buf-Linux-${ARCH}
 
 function install() {
   if command -v buf >/dev/null; then
