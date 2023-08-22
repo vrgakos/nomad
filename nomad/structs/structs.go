@@ -4525,6 +4525,7 @@ type Job struct {
 	ModifyIndex    uint64
 	JobModifyIndex uint64
 
+	// Links and Description fields for the Web UI
 	Ui *JobUIConfig
 }
 
