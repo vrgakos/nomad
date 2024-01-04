@@ -1100,6 +1100,8 @@ type ConsulConnect struct {
 	// Native indicates whether the service is Consul Connect Native enabled.
 	Native bool
 
+	TProxy bool
+
 	// SidecarService is non-nil if a service requires a sidecar.
 	SidecarService *ConsulSidecarService
 
@@ -1117,6 +1119,7 @@ func (c *ConsulConnect) Copy() *ConsulConnect {
 	}
 
 	return &ConsulConnect{
+		TProxy:         c.TProxy,
 		Native:         c.Native,
 		SidecarService: c.SidecarService.Copy(),
 		SidecarTask:    c.SidecarTask.Copy(),
@@ -1128,6 +1131,10 @@ func (c *ConsulConnect) Copy() *ConsulConnect {
 func (c *ConsulConnect) Equal(o *ConsulConnect) bool {
 	if c == nil || o == nil {
 		return c == o
+	}
+
+	if c.TProxy != o.TProxy {
+		return false
 	}
 
 	if c.Native != o.Native {

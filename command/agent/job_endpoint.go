@@ -1662,6 +1662,7 @@ func ApiConsulConnectToStructs(in *api.ConsulConnect) *structs.ConsulConnect {
 	}
 	return &structs.ConsulConnect{
 		Native:         in.Native,
+		TProxy:         in.TProxy,
 		SidecarService: apiConnectSidecarServiceToStructs(in.SidecarService),
 		SidecarTask:    apiConnectSidecarTaskToStructs(in.SidecarTask),
 		Gateway:        apiConnectGatewayToStructs(in.Gateway),

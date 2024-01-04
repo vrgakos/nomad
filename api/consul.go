@@ -52,6 +52,7 @@ func (c *Consul) MergeNamespace(namespace *string) {
 // ConsulConnect represents a Consul Connect jobspec block.
 type ConsulConnect struct {
 	Native         bool                  `hcl:"native,optional"`
+	TProxy         bool                  `hcl:"tproxy,optional"`
 	Gateway        *ConsulGateway        `hcl:"gateway,block"`
 	SidecarService *ConsulSidecarService `mapstructure:"sidecar_service" hcl:"sidecar_service,block"`
 	SidecarTask    *SidecarTask          `mapstructure:"sidecar_task" hcl:"sidecar_task,block"`
