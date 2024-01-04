@@ -259,6 +259,7 @@ func (cu *ConsulUpstream) Canonicalize() {
 type ConsulExposeConfig struct {
 	Paths []*ConsulExposePath `mapstructure:"path" hcl:"path,block"`
 	Path  []*ConsulExposePath // Deprecated: only to maintain backwards compatibility. Use Paths instead.
+	Ports []*ConsulExposePort `mapstructure:"port" hcl:"port,block"`
 }
 
 func (cec *ConsulExposeConfig) Canonicalize() {
@@ -273,6 +274,11 @@ func (cec *ConsulExposeConfig) Canonicalize() {
 	if len(cec.Path) == 0 {
 		cec.Path = nil
 	}
+
+	if len(cec.Ports) == 0 {
+		cec.Ports = nil
+	}
+
 }
 
 type ConsulExposePath struct {
@@ -280,6 +286,14 @@ type ConsulExposePath struct {
 	Protocol      string `hcl:"protocol,optional"`
 	LocalPathPort int    `mapstructure:"local_path_port" hcl:"local_path_port,optional"`
 	ListenerPort  string `mapstructure:"listener_port" hcl:"listener_port,optional"`
+}
+
+type ConsulExposePort struct {
+	// Protocol is one of udp, tcp. Defaults to tcp
+	Protocol string `hcl:"protocol,optional"`
+
+	// ListenerPort is the label for the port
+	ListenerPort string `mapstructure:"listener_port" hcl:"listener_port,optional"`
 }
 
 // ConsulGateway is used to configure one of the Consul Connect Gateway types.

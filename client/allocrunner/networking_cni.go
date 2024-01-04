@@ -17,6 +17,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 
@@ -123,15 +124,26 @@ func (c *cniNetworkConfigurator) Setup(ctx context.Context, alloc *structs.Alloc
 			if svc.Connect.SidecarService.Proxy != nil &&
 				svc.Connect.SidecarService.Proxy.Expose != nil {
 
-				for _, expose := range svc.Connect.SidecarService.Proxy.Expose.Paths {
-					if idx, ok := portLabels[expose.ListenerPort]; ok {
-						exposePorts = append(exposePorts, string(portMapping[idx].HostPort))
+				for _, path := range svc.Connect.SidecarService.Proxy.Expose.Paths {
+					if idx, ok := portLabels[path.ListenerPort]; ok {
+						exposePorts = append(exposePorts,
+							strconv.FormatInt(int64(portMapping[idx].HostPort), 10))
+					}
+				}
+
+				// TODO: how does iptables.Config deal with UDP?
+				for _, port := range svc.Connect.SidecarService.Proxy.Expose.Ports {
+					if idx, ok := portLabels[port.ListenerPort]; ok {
+						exposePorts = append(exposePorts,
+							strconv.FormatInt(int64(portMapping[idx].HostPort), 10))
 					}
 				}
 			}
 		}
 	}
+
 	if useTproxy {
+
 		consulIPTablesCfgMap := &consulIPTables.Config{
 			ConsulDNSIP:          "",    // TODO: figure this out!
 			ConsulDNSPort:        0,     // TODO: figure this out!
@@ -151,6 +163,8 @@ func (c *cniNetworkConfigurator) Setup(ctx context.Context, alloc *structs.Alloc
 		}
 
 		argsMap["NOMAD_IPTABLES_CONFIG"] = string(iptablesCfg)
+
+		c.logger.Info("NOMAD_IPTABLES_CONFIG", "cfg", string(iptablesCfg))
 	}
 
 	// Depending on the version of bridge cni plugin used, a known race could occure

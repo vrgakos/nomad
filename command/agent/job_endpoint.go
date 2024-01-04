@@ -1898,6 +1898,7 @@ func apiConsulExposeConfigToStructs(in *api.ConsulExposeConfig) *structs.ConsulE
 
 	return &structs.ConsulExposeConfig{
 		Paths: apiConsulExposePathsToStructs(paths),
+		Ports: apiConsulExposePortsToStructs(in.Ports),
 	}
 }
 
@@ -1915,6 +1916,20 @@ func apiConsulExposePathsToStructs(in []*api.ConsulExposePath) []structs.ConsulE
 		}
 	}
 	return paths
+}
+
+func apiConsulExposePortsToStructs(in []*api.ConsulExposePort) []structs.ConsulExposePort {
+	if len(in) == 0 {
+		return nil
+	}
+	ports := make([]structs.ConsulExposePort, len(in))
+	for i, port := range in {
+		ports[i] = structs.ConsulExposePort{
+			Protocol:     port.Protocol,
+			ListenerPort: port.ListenerPort,
+		}
+	}
+	return ports
 }
 
 func apiConnectSidecarTaskToStructs(in *api.SidecarTask) *structs.SidecarTask {

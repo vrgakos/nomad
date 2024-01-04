@@ -1697,6 +1697,7 @@ func upstreamsEquals(a, b []ConsulUpstream) bool {
 // ConsulExposeConfig represents a Consul Connect expose jobspec block.
 type ConsulExposeConfig struct {
 	Paths []ConsulExposePath
+	Ports []ConsulExposePort
 }
 
 type ConsulExposePath struct {
@@ -1706,7 +1707,16 @@ type ConsulExposePath struct {
 	ListenerPort  string
 }
 
+type ConsulExposePort struct {
+	Protocol     string // one of udp, tcp
+	ListenerPort string // port label
+}
+
 func exposePathsEqual(a, b []ConsulExposePath) bool {
+	return helper.SliceSetEq(a, b)
+}
+
+func exposePortsEqual(a, b []ConsulExposePort) bool {
 	return helper.SliceSetEq(a, b)
 }
 
@@ -1717,8 +1727,13 @@ func (e *ConsulExposeConfig) Copy() *ConsulExposeConfig {
 	}
 	paths := make([]ConsulExposePath, len(e.Paths))
 	copy(paths, e.Paths)
+
+	ports := make([]ConsulExposePort, len(e.Ports))
+	copy(ports, e.Ports)
+
 	return &ConsulExposeConfig{
 		Paths: paths,
+		Ports: ports,
 	}
 }
 
@@ -1727,7 +1742,7 @@ func (e *ConsulExposeConfig) Equal(o *ConsulExposeConfig) bool {
 	if e == nil || o == nil {
 		return e == o
 	}
-	return exposePathsEqual(e.Paths, o.Paths)
+	return exposePathsEqual(e.Paths, o.Paths) && exposePortsEqual(e.Ports, o.Ports)
 }
 
 // ConsulGateway is used to configure one of the Consul Connect Gateway types.
